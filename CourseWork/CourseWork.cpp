@@ -145,11 +145,11 @@ bool hasOnlyDigits(const string s) {
 int main() {
 	system("chcp 1251 && cls");
 	Student person;
-	Characteristic ñharacteristic;
+	Characteristic characteristic;
 	cout << "\t<---Àâòîìàòè÷íå íàïèñàííÿ õàðàêòåðèñòèê--->" << "\n\n";
 	person.studentInput();
-	ñharacteristic.charactInput();
+	characteristic.charactInput();
 	person.studentOutput();
-	ñharacteristic.charactOutput();
+	characteristic.charactOutput();
 	return 0;
 }
