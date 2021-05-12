@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <climits>
+#include <fstream>
 using namespace std;
 #define MAX_SIZE 255
 
@@ -26,6 +27,7 @@ public:
 	}
 	void studentInput(); // функція для введеня даних про студента користувачем
 	void studentOutput(); // функція для виведення даних про студента користувачем
+	void studentCharact(string filename); // функція для виведення характеристики
 	~Student() {
 		delete[]studentQualities;
 	}
@@ -37,6 +39,7 @@ class Characteristic {
 public:
 	void charactInput(); // функція для введеня даних про характеристику
 	void charactOutput(); // функція для виведення даних про характеристику
+	string charactChoise(); // функція вибору потрібного шаблону
 };
 
 void Student::studentInput() {
@@ -54,9 +57,9 @@ void Student::studentInput() {
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> studentSex;
 	}
-	cout << "Введіть вік: ";
+	cout << "Введіть рік народження: ";
 	cin >> studentAge;
-	while (!cin.good() || studentAge <= 0 || studentAge > 150) {
+	while (!cin.good() || studentAge <= 1920 || studentAge > 2021) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
@@ -103,7 +106,7 @@ void Student::studentInput() {
 }
 
 void Student::studentOutput() {
-	cout << "Student:" << endl << studentName << endl << studentSex << endl << studentAge << endl;
+	cout << "Student:" << endl << studentName << endl << ((studentSex) ? "Жіноча" : "Чоловіча") << " стать"  << endl << studentAge << endl;
 	for (int i = 0; i < numOfQualities; i++) {
 		cout << studentQualities[i] << " ";
 	}
@@ -136,6 +139,57 @@ void Characteristic::charactOutput() {
 	cout << "Characteristic: " << endl << charactRating << endl << charactLanguage << endl;
 }
 
+string Characteristic::charactChoise(){
+    string filename;
+	if (charactRating==1) filename="pupil_positive.txt";
+	else filename="pupil_negative.txt";
+    return filename;
+}
+
+void Student::studentCharact(string filename){
+    ifstream fin(filename);
+    if(!fin){
+        cout<<"Неможливо відкрити файл.\n";
+        return;
+    }
+    char symbol;
+    fin.unsetf(ios::skipws);
+    while (!fin.eof()){
+		fin >> symbol;
+		if (!fin.eof()){
+		    if (symbol == '1') 
+				cout << studentName;
+		    if (symbol == '4'){
+		        for (int i = 0; i < numOfQualities; i++)
+		        cout << studentQualities[i] << " ";
+		    } 
+		    if (symbol == '2') 
+				cout << studentAge;
+			if (symbol == '3'){
+				switch (studentHobby){
+					case 1:
+					cout << "спорту";
+					break;
+					case 2:
+					cout << "читання книг";
+					break;
+					case 3:
+					cout << "фотографування";
+					break;
+					case 4:
+					cout << "графічного дизайну";
+					break;
+					case 5:
+					cout << "електроніки";
+					break;
+				}
+			}
+		    else cout<<symbol;
+		}
+    }
+	fin.close();
+}
+
 
 bool hasOnlyDigits(const string s) {
 	return s.find_first_not_of("0123456789!@№;$%^:?&*()_-+=/|.,") == string::npos;
@@ -151,5 +205,7 @@ int main() {
 	characteristic.charactInput();
 	person.studentOutput();
 	characteristic.charactOutput();
+	string filename = characteristic.charactChoise();
+	person.studentCharact(filename);
 	return 0;
 }
