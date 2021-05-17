@@ -1,11 +1,14 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
 #include <climits>
 #include <fstream>
+#include <ctime>
 using namespace std;
 #define MAX_SIZE 255
 
 bool hasOnlyDigits(const string s); // функція для перевірки строк на наявність букв
+void getDate(); 
 
 class Student {
 	string studentName; // ПІБ студента
@@ -36,6 +39,7 @@ public:
 class Characteristic {
 	int charactRating; // рейтинг характеристики
 	int charactLanguage; // мова характеристики
+	int charactPurpose; // куди призначена характеристика
 public:
 	void charactInput(); // функція для введеня даних про характеристику
 	void charactOutput(); // функція для виведення даних про характеристику
@@ -114,10 +118,14 @@ void Student::studentOutput() {
 }
 
 void Characteristic::charactInput() {
+	cout << "Оберіть на кого характеристика: " << endl;
+	cout << "1.Учень \n2.Студент \n";
+	cin >> charactPurpose;
+
 	cout << "Оберіть рейтинг характеристики: " << endl;
-	cout << "1.Позитивна \n2.Негативна \n3.На 10% позитивна і на 90% негативна \n4.На 90% позитивна і на 10% негативна\n5.На 50% позитивна і на 50% негативна\n";
+	cout << "1.Позитивна \n2.Негативна \n3.На 50% позитивна і на 50% негативна\n";
 	cin >> charactRating;
-	while (!cin.good() || charactRating < 1 || charactRating > 6) {
+	while (!cin.good() || charactRating < 1 || charactRating > 3) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
@@ -142,7 +150,8 @@ void Characteristic::charactOutput() {
 string Characteristic::charactChoise(){
     string filename;
 	if (charactRating==1) filename="pupil_positive.txt";
-	else filename="pupil_negative.txt";
+	else if (charactRating == 2) filename="pupil_negative.txt";
+	else filename="pupil_50.txt";
     return filename;
 }
 
@@ -184,17 +193,22 @@ void Student::studentCharact(string filename){
 					break;
 				}
 			}
+			if (symbol == '^') getDate();
 		    else cout<<symbol;
 		}
     }
 	fin.close();
 }
 
-
 bool hasOnlyDigits(const string s) {
 	return s.find_first_not_of("0123456789!@№;$%^:?&*()_-+=/|.,") == string::npos;
 }
 
+void getDate() {
+	time_t t = time(0);  
+	tm* now = localtime(&t);
+	cout << now->tm_mday << '.'<< (now->tm_mon + 1) << '.'<< (now->tm_year + 1900);
+}
 
 int main() {
 	system("chcp 1251 && cls");
