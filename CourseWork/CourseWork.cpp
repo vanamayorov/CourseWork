@@ -4,16 +4,19 @@
 #include <climits>
 #include <fstream>
 #include <ctime>
+#include <iomanip>
+#include <string.h>
+#include <windows.h>
 using namespace std;
 #define MAX_SIZE 255
 
 bool hasOnlyDigits(const string s); // функція для перевірки строк на наявність букв
-void getDate(); 
+string getDate();
 
 class Student {
 	string studentName; // ПІБ студента
 	int studentSex; // стать студента
-	int studentAge; // вік студента
+	string studentAge; // вік студента
 	int studentHobby; // види захоплень
 	int numOfQualities; // к-сть якостей
 	string* studentQualities;// особисті якості
@@ -22,7 +25,7 @@ public:
 	Student() {
 		studentName = "";
 		studentSex = 0;
-		studentAge = 0;
+		studentAge = "";
 		studentHobby = 0;
 		numOfQualities = 0;
 		studentQualities = NULL;
@@ -31,6 +34,9 @@ public:
 	void studentInput(); // функція для введеня даних про студента користувачем
 	void studentOutput(); // функція для виведення даних про студента користувачем
 	void studentCharact(string filename); // функція для виведення характеристики
+	string getName() {
+		return this->studentName;
+	}
 	~Student() {
 		delete[]studentQualities;
 	}
@@ -43,8 +49,60 @@ class Characteristic {
 public:
 	void charactInput(); // функція для введеня даних про характеристику
 	void charactOutput(); // функція для виведення даних про характеристику
-	string charactChoise(); // функція вибору потрібного шаблону
+	string charactChoice(); // функція вибору потрібного шаблону
 };
+
+
+
+void Characteristic::charactInput() {
+	cout << "Оберіть на кого характеристика: " << endl;
+	cout << "1.Учень \n2.Студент \n" << "> ";
+	cin >> charactPurpose;
+	while (!cin.good() || charactPurpose < 1 || charactPurpose > 2) {
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
+		cin >> charactPurpose;
+	}
+	cout << "Оберіть рейтинг характеристики: " << endl;
+	cout << "1.Позитивна \n2.Негативна \n3.На 50% позитивна і на 50% негативна\n" << "> ";
+	cin >> charactRating;
+	while (!cin.good() || charactRating < 1 || charactRating > 3) {
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
+		cin >> charactRating;
+	}
+
+	cout << "Оберіть мову характеристики: " << endl;
+	cout << "1.Українська \n2.Російська \n3.Англійська\n" << "> ";
+	cin >> charactLanguage;
+	while (!cin.good() || charactLanguage < 1 || charactLanguage > 3) {
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
+		cin >> charactLanguage;
+	}
+}
+
+void Characteristic::charactOutput() {
+	cout << "Characteristic: " << endl << charactRating << endl << charactLanguage << endl;
+}
+
+string Characteristic::charactChoice() {
+	string filename;
+	if (charactRating == 1) {
+		filename = "pupil_positive.txt";
+	}
+	else if (charactRating == 2) {
+		filename = "pupil_negative.txt";
+	}
+	else {
+		filename = "pupil_50.txt";
+	}
+	return filename;
+}
+
 
 void Student::studentInput() {
 	cout << "Введіть прізвище, ім'я, по батькові:" << endl;
@@ -63,7 +121,7 @@ void Student::studentInput() {
 	}
 	cout << "Введіть рік народження: ";
 	cin >> studentAge;
-	while (!cin.good() || studentAge <= 1920 || studentAge > 2021) {
+	while (!cin.good() || stoi(studentAge) <= 1920 || stoi(studentAge) > 2021) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
@@ -100,118 +158,121 @@ void Student::studentInput() {
 		studentQualities[i] = studentQuality;
 
 	}
-	/*do {
-		cout << "Оберіть особисті якості серед перелічених: " << endl;
-		cout << "1.Амбіційність \n2.Харизматичність \n3.Кооперативність \n4.Ввічливість " <<
-			"\n5.Креативність  \n6.Чесність \n7.Пунктуальність \n8.Відповідальність\n";
-		cin >> studentQuality;
-	} while (studentQuality < 1 || studentQuality > 9);*/
-
 }
 
 void Student::studentOutput() {
-	cout << "Student:" << endl << studentName << endl << ((studentSex) ? "Жіноча" : "Чоловіча") << " стать"  << endl << studentAge << endl;
+	cout << "Student:" << endl << studentName << endl << ((studentSex) ? "Жіноча" : "Чоловіча") << " стать" << endl << studentAge << endl;
 	for (int i = 0; i < numOfQualities; i++) {
 		cout << studentQualities[i] << " ";
 	}
 	cout << endl;
 }
 
-void Characteristic::charactInput() {
-	cout << "Оберіть на кого характеристика: " << endl;
-	cout << "1.Учень \n2.Студент \n";
-	cin >> charactPurpose;
+void Student::studentCharact(string filename) {
 
-	cout << "Оберіть рейтинг характеристики: " << endl;
-	cout << "1.Позитивна \n2.Негативна \n3.На 50% позитивна і на 50% негативна\n";
-	cin >> charactRating;
-	while (!cin.good() || charactRating < 1 || charactRating > 3) {
-		cin.clear();
-		cin.ignore(INT_MAX, '\n');
-		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
-		cin >> charactRating;
+	fstream templateSample, studentFile;
+	templateSample.open(filename, fstream::in);
+	studentFile.open("student1.txt", fstream::out);
+
+	if (!templateSample.is_open()) {
+		cout << "Неможливо відкрити файл-шаблон.\n";
+		return;
 	}
 
-	cout << "Оберіть мову характеристики: " << endl;
-	cout << "1.Українська \n2.Російська \n3.Англійська\n";
-	cin >> charactLanguage;
-	while (!cin.good() || charactLanguage < 1 || charactLanguage > 3) {
-		cin.clear();
-		cin.ignore(INT_MAX, '\n');
-		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
-		cin >> charactLanguage;
+	if (!studentFile.is_open()) {
+		cout << "Неможливо відкрити файл-характеристики.\n";
+		return;
 	}
-}
 
-void Characteristic::charactOutput() {
-	cout << "Characteristic: " << endl << charactRating << endl << charactLanguage << endl;
-}
+	char ch;
+	string str = "";
 
-string Characteristic::charactChoise(){
-    string filename;
-	if (charactRating==1) filename="pupil_positive.txt";
-	else if (charactRating == 2) filename="pupil_negative.txt";
-	else filename="pupil_50.txt";
-    return filename;
-}
+	templateSample.unsetf(ios::skipws);
+	studentFile.unsetf(ios::skipws);
+	while (!templateSample.eof()) {
+		templateSample >> ch;
+		studentFile << ch;
+	}
+	studentFile.close();
+	templateSample.close();
 
-void Student::studentCharact(string filename){
-    ifstream fin(filename);
-    if(!fin){
-        cout<<"Неможливо відкрити файл.\n";
-        return;
-    }
-    char symbol;
-    fin.unsetf(ios::skipws);
-    while (!fin.eof()){
-		fin >> symbol;
-		if (!fin.eof()){
-		    if (symbol == '1') 
-				cout << studentName;
-		    if (symbol == '4'){
-		        for (int i = 0; i < numOfQualities; i++)
-		        cout << studentQualities[i] << " ";
-		    } 
-		    if (symbol == '2') 
-				cout << studentAge;
-			if (symbol == '3'){
-				switch (studentHobby){
-					case 1:
-					cout << "спорту";
+
+	studentFile.open("student1.txt", fstream::in);
+	while (!studentFile.eof()) {
+		studentFile >> ch;
+		if (!studentFile.eof()) {
+			if (ch == '1') {
+				str += studentName;
+			}
+			else if (ch == '2') {
+				str += studentAge;
+			}
+			else if (ch == '3') {
+				switch (studentHobby) {
+				case 1:
+					str += "спорту";
 					break;
-					case 2:
-					cout << "читання книг";
+				case 2:
+					str += "читання книг";
 					break;
-					case 3:
-					cout << "фотографування";
+				case 3:
+					str += "фотографування";
 					break;
-					case 4:
-					cout << "графічного дизайну";
+				case 4:
+					str += "графічного дизайну";
 					break;
-					case 5:
-					cout << "електроніки";
+				case 5:
+					str += "електроніки";
 					break;
 				}
 			}
-			if (symbol == '^') getDate();
-		    else cout<<symbol;
+			else if (ch == '4') {
+				for (int i = 0; i < numOfQualities; i++) {
+					if (i == numOfQualities - 1) {
+						str += studentQualities[i];
+					}
+					else {
+						str += studentQualities[i];
+						str += ", ";
+					}
+				}
+			}
+			else if (ch == '^') {
+				str += getDate();
+			}
+			else {
+				str += ch;
+			}
 		}
-    }
-	fin.close();
+	}
+	studentFile.close();
+
+	studentFile.open("student1.txt", fstream::out);
+	studentFile << setw(50) << str;
+	studentFile.close();
 }
 
-bool hasOnlyDigits(const string s) {
-	return s.find_first_not_of("0123456789!@№;$%^:?&*()_-+=/|.,") == string::npos;
-}
-
-void getDate() {
-	time_t t = time(0);  
-	tm* now = localtime(&t);
-	cout << now->tm_mday << '.'<< (now->tm_mon + 1) << '.'<< (now->tm_year + 1900);
-}
+//string getPathToStudentFile(Student obj) {
+//	string studentName = obj.getName();
+//	string pathToStudentFile;
+//	int end, counter;
+//	end = 0;
+//	int i = 0;
+//	while (end != 2) {
+//		if (studentName[i] == ' ') {
+//			counter = i;
+//			end++;
+//		}
+//		i++;
+//	}
+//	for (int j = 0; j <= counter; j++) {
+//		pathToStudentFile += studentName[j];
+//	}
+//	return pathToStudentFile;
+//
+//}
 
 int main() {
-	system("chcp 1251 && cls");
 	Student person;
 	Characteristic characteristic;
 	cout << "\t<---Автоматичне написання характеристик--->" << "\n\n";
@@ -219,7 +280,21 @@ int main() {
 	characteristic.charactInput();
 	person.studentOutput();
 	characteristic.charactOutput();
-	string filename = characteristic.charactChoise();
+	string filename = characteristic.charactChoice();
+	/*string pathToStudentFile = getPathToStudentFile(person);
+	cout << pathToStudentFile << endl;*/
 	person.studentCharact(filename);
 	return 0;
 }
+
+string getDate() {
+	time_t t = time(0);
+	tm* now = localtime(&t);
+	string str;
+	return str = to_string(now->tm_mday) + '.' + to_string(now->tm_mon + 1) + '.' + to_string(now->tm_year + 1900);
+}
+
+bool hasOnlyDigits(const string s) {
+	return s.find_first_not_of("0123456789!@№;$%^:?&*()_-+=/|.,") == string::npos;
+}
+
