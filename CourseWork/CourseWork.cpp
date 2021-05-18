@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <string.h>
 #include <windows.h>
+#include <sys/stat.h>
 using namespace std;
 #define MAX_SIZE 255
 
@@ -33,7 +34,7 @@ public:
 	}
 	void studentInput(); // функція для введеня даних про студента користувачем
 	void studentOutput(); // функція для виведення даних про студента користувачем
-	void studentCharact(string filename); // функція для виведення характеристики
+	void studentCharact(string inputFile, string outputFile); // функція для виведення характеристики
 	string getName() {
 		return this->studentName;
 	}
@@ -46,15 +47,35 @@ class Characteristic {
 	int charactRating; // рейтинг характеристики
 	int charactLanguage; // мова характеристики
 	int charactPurpose; // куди призначена характеристика
+	string nameOfStudentFile; //ім'я створюваного файлу, в який ведеться запис
+	string fileExtension; // розширення файлу
 public:
 	void charactInput(); // функція для введеня даних про характеристику
 	void charactOutput(); // функція для виведення даних про характеристику
 	string charactChoice(); // функція вибору потрібного шаблону
+	string getNameOfStudentFile(); // функція для отримання назви файлу, в який ведеться запис
 };
 
 
 
 void Characteristic::charactInput() {
+	cout << "Оберіть мову характеристики: " << endl;
+	cout << "1.Українська \n2.Російська\n" << "> ";
+	cin >> charactLanguage;
+	while (!cin.good() || charactLanguage < 1 || charactLanguage > 3) {
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
+		cin >> charactLanguage;
+	}
+	cout << "Введіть назву текстового файлу у який буде вестись запис про особу: " << endl << "> ";
+	cin >> nameOfStudentFile;
+	while (!cin.good() || hasOnlyDigits(nameOfStudentFile)) {
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
+		cin >> nameOfStudentFile;
+	}
 	cout << "Оберіть на кого характеристика: " << endl;
 	cout << "1.Учень \n2.Студент \n" << "> ";
 	cin >> charactPurpose;
@@ -74,44 +95,53 @@ void Characteristic::charactInput() {
 		cin >> charactRating;
 	}
 
-	cout << "Оберіть мову характеристики: " << endl;
-	cout << "1.Українська \n2.Російська \n3.Англійська\n" << "> ";
-	cin >> charactLanguage;
-	while (!cin.good() || charactLanguage < 1 || charactLanguage > 3) {
-		cin.clear();
-		cin.ignore(INT_MAX, '\n');
-		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
-		cin >> charactLanguage;
-	}
 }
 
 void Characteristic::charactOutput() {
-	cout << "Characteristic: " << endl << charactRating << endl << charactLanguage << endl;
+	cout << "Characteristic: " << endl << charactRating << endl << charactLanguage << endl << nameOfStudentFile << ".txt" << endl;
 }
 
 string Characteristic::charactChoice() {
 	string filename;
-	if (charactRating == 1) {
-		filename = "pupil_positive.txt";
+	if (charactLanguage == 1) {
+		if (charactRating == 1) {
+			filename = "ua/pupil_positive.txt";
+		}
+		else if (charactRating == 2) {
+			filename = "ua/pupil_negative.txt";
+		}
+		else {
+			filename = "ua/pupil_50.txt";
+		}
 	}
-	else if (charactRating == 2) {
-		filename = "pupil_negative.txt";
+	else if (charactLanguage == 2) {
+		if (charactRating == 1) {
+			filename = "rus/rus_pupil_positive.txt";
+		}
+		else if (charactRating == 2) {
+			filename = "rus/rus_pupil_negative.txt";
+		}
+		else {
+			filename = "rus/rus_pupil_50.txt";
+		}
 	}
-	else {
-		filename = "pupil_50.txt";
-	}
+	
 	return filename;
 }
 
+string Characteristic::getNameOfStudentFile() {
+	return "students\\" + this->nameOfStudentFile + ".doc";
+}
 
 void Student::studentInput() {
-	cout << "Введіть прізвище, ім'я, по батькові:" << endl;
+	cout << "Введіть прізвище, ім'я, по батькові:" << endl << "> ";
+	getline(cin, studentName);
 	getline(cin, studentName);
 	while (!cin.good() || studentName.length() <= 10 || studentName.length() >= 255 || hasOnlyDigits(studentName)) {
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		getline(cin, studentName);
 	}
-	cout << "Введіть стать(0-чоловіча, 1-жіноча): ";
+	cout << "Введіть стать(0-чоловіча, 1-жіноча): " << endl << "> ";
 	cin >> studentSex;
 	while (!cin.good() || (studentSex != 0 && studentSex != 1)) {
 		cin.clear();
@@ -119,7 +149,7 @@ void Student::studentInput() {
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> studentSex;
 	}
-	cout << "Введіть рік народження: ";
+	cout << "Введіть рік народження: " << endl << "> ";
 	cin >> studentAge;
 	while (!cin.good() || stoi(studentAge) <= 1920 || stoi(studentAge) > 2021) {
 		cin.clear();
@@ -148,8 +178,9 @@ void Student::studentInput() {
 		cin >> numOfQualities;
 	}
 	studentQualities = new string[numOfQualities];
-	cout << "Введіть якості студента:" << endl << "> ";
+	cout << "Введіть якості студента:" << endl;
 	for (int i = 0; i < numOfQualities; i++) {
+		cout << "> ";
 		cin >> studentQuality;
 		while (studentQuality.length() == 0 || !cin.good() || hasOnlyDigits(studentQuality)) {
 			cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
@@ -168,11 +199,10 @@ void Student::studentOutput() {
 	cout << endl;
 }
 
-void Student::studentCharact(string filename) {
-
+void Student::studentCharact(string inputFile, string outputFile) {
 	fstream templateSample, studentFile;
-	templateSample.open(filename, fstream::in);
-	studentFile.open("student1.txt", fstream::out);
+	templateSample.open(inputFile, fstream::in);
+	studentFile.open(outputFile, fstream::out);
 
 	if (!templateSample.is_open()) {
 		cout << "Неможливо відкрити файл-шаблон.\n";
@@ -183,7 +213,6 @@ void Student::studentCharact(string filename) {
 		cout << "Неможливо відкрити файл-характеристики.\n";
 		return;
 	}
-
 	char ch;
 	string str = "";
 
@@ -197,7 +226,7 @@ void Student::studentCharact(string filename) {
 	templateSample.close();
 
 
-	studentFile.open("student1.txt", fstream::in);
+	studentFile.open(outputFile, fstream::in);
 	while (!studentFile.eof()) {
 		studentFile >> ch;
 		if (!studentFile.eof()) {
@@ -245,45 +274,35 @@ void Student::studentCharact(string filename) {
 			}
 		}
 	}
+	cout << setw(50) << str << endl;
+	studentFile.close();
+	studentFile.open(outputFile, fstream::out);
+	studentFile << str;
 	studentFile.close();
 
-	studentFile.open("student1.txt", fstream::out);
-	studentFile << setw(50) << str;
-	studentFile.close();
 }
 
-//string getPathToStudentFile(Student obj) {
-//	string studentName = obj.getName();
-//	string pathToStudentFile;
-//	int end, counter;
-//	end = 0;
-//	int i = 0;
-//	while (end != 2) {
-//		if (studentName[i] == ' ') {
-//			counter = i;
-//			end++;
-//		}
-//		i++;
-//	}
-//	for (int j = 0; j <= counter; j++) {
-//		pathToStudentFile += studentName[j];
-//	}
-//	return pathToStudentFile;
-//
-//}
+
 
 int main() {
+	setlocale(LC_CTYPE, "rus");
+	SetConsoleCP(1251); // встановлення кодування Windows-1251 в  потік введення
+	SetConsoleOutputCP(1251); // встановлення кодування Windows-1251 в  потік виведення
 	Student person;
 	Characteristic characteristic;
-	cout << "\t<---Автоматичне написання характеристик--->" << "\n\n";
-	person.studentInput();
-	characteristic.charactInput();
-	person.studentOutput();
-	characteristic.charactOutput();
-	string filename = characteristic.charactChoice();
-	/*string pathToStudentFile = getPathToStudentFile(person);
-	cout << pathToStudentFile << endl;*/
-	person.studentCharact(filename);
+	char choice;
+	do
+	{
+		cout << "\t<---Автоматичне написання характеристик--->" << "\n\n";
+		characteristic.charactInput();
+		person.studentInput();
+		characteristic.charactOutput();
+		person.studentOutput();
+		person.studentCharact(characteristic.charactChoice(), characteristic.getNameOfStudentFile());
+		cout << "Бажаєте продовжити виконання програми?(у - так)" << endl << "> ";
+		cin >> choice;
+	} while (choice == 'y' || choice == 'т' || choice == 'у');
+
 	return 0;
 }
 
