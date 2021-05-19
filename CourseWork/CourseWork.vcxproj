@@ -19,7 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Characteristic.cpp" />
     <ClCompile Include="CourseWork.cpp" />
+    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Student.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Characteristic.h" />
+    <ClInclude Include="Functions.h" />
+    <ClInclude Include="Student.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
