@@ -252,85 +252,99 @@ void Student::studentOutput() {
 }
 
 void Student::studentCharact(string inputFile, string outputFile) {
-	fstream templateSample, studentFile;
-	templateSample.open(inputFile, fstream::in);
-	studentFile.open(outputFile, fstream::out);
+	bool ind;
+	do
+	{
+		fstream templateSample, studentFile;
+		templateSample.exceptions(fstream::failbit | fstream::badbit);
+		studentFile.exceptions(fstream::failbit | fstream::badbit);
+		try {
+			templateSample.open(inputFile, fstream::in);
+			studentFile.open(outputFile, fstream::out);
 
-	if (!templateSample.is_open()) {
-		cout << "Неможливо відкрити файл-шаблон.\n";
-		return;
-	}
-
-	if (!studentFile.is_open()) {
-		cout << "Неможливо відкрити файл-характеристики.\n";
-		return;
-	}
-	char ch;
-	string str = "";
-
-	templateSample.unsetf(ios::skipws);
-	studentFile.unsetf(ios::skipws);
-	while (!templateSample.eof()) {
-		templateSample >> ch;
-		studentFile << ch;
-	}
-	studentFile.close();
-	templateSample.close();
-
-
-	studentFile.open(outputFile, fstream::in);
-	while (!studentFile.eof()) {
-		studentFile >> ch;
-		if (!studentFile.eof()) {
-			if (ch == '1') {
-				str += studentName;
+			/*if (!templateSample.is_open()) {
+				throw "Неможливо відкрити файл-шаблон.\n";
 			}
-			else if (ch == '2') {
-				str += studentAge;
+
+			if (!studentFile.is_open()) {
+				throw "Неможливо відкрити файл-характеристики.\n";
+			}*/
+			char ch;
+			string str = "";
+
+			templateSample.unsetf(ios::skipws);
+			studentFile.unsetf(ios::skipws);
+			while (!templateSample.eof()) {
+				templateSample >> ch;
+				studentFile << ch;
 			}
-			else if (ch == '3') {
-				switch (studentHobby) {
-				case 1:
-					str += "спорту";
-					break;
-				case 2:
-					str += "читання книг";
-					break;
-				case 3:
-					str += "фотографування";
-					break;
-				case 4:
-					str += "графічного дизайну";
-					break;
-				case 5:
-					str += "електроніки";
-					break;
-				}
-			}
-			else if (ch == '4') {
-				for (int i = 0; i < numOfQualities; i++) {
-					if (i == numOfQualities - 1) {
-						str += studentQualities[i];
+			studentFile.close();
+			templateSample.close();
+
+
+			studentFile.open(outputFile, fstream::in);
+			while (!studentFile.eof()) {
+				studentFile >> ch;
+				if (!studentFile.eof()) {
+					if (ch == '1') {
+						str += studentName;
+					}
+					else if (ch == '2') {
+						str += studentAge;
+					}
+					else if (ch == '3') {
+						switch (studentHobby) {
+						case 1:
+							str += "спорту";
+							break;
+						case 2:
+							str += "читання книг";
+							break;
+						case 3:
+							str += "фотографування";
+							break;
+						case 4:
+							str += "графічного дизайну";
+							break;
+						case 5:
+							str += "електроніки";
+							break;
+						}
+					}
+					else if (ch == '4') {
+						for (int i = 0; i < numOfQualities; i++) {
+							if (i == numOfQualities - 1) {
+								str += studentQualities[i];
+							}
+							else {
+								str += studentQualities[i];
+								str += ", ";
+							}
+						}
+					}
+					else if (ch == '^') {
+						str += getDate();
 					}
 					else {
-						str += studentQualities[i];
-						str += ", ";
+						str += ch;
 					}
 				}
 			}
-			else if (ch == '^') {
-				str += getDate();
-			}
-			else {
-				str += ch;
-			}
+			cout << str << endl;
+			studentFile.close();
+			studentFile.open(outputFile, fstream::out);
+			studentFile << str;
+			studentFile.close();
+			ind = false;
 		}
-	}
-	cout << str << endl;
-	studentFile.close();
-	studentFile.open(outputFile, fstream::out);
-	studentFile << str;
-	studentFile.close();
+		catch (const fstream::failure& err) {
+			cout << err.what() << endl;
+			cout << "***Виникла помилка при відкритті/створенні/закритті файлу***" << endl;
+			cout << "Спробуєте ще раз?(1 - так, 0 - ні)" << endl << "> ";
+			cin >> ind;
+		}
+	} while (ind);
+
 }
 
 
@@ -339,7 +353,7 @@ int main() {
 	setlocale(LC_CTYPE, "rus");
 	Student person;
 	Characteristic characteristic;
-	int choice;
+	bool choice;
 	cout << "\t<---Автоматичне написання характеристик--->" << "\n\n";
 	characteristic.makeDirectory();
 	do
@@ -349,9 +363,9 @@ int main() {
 		characteristic.charactOutput();
 		person.studentOutput();
 		person.studentCharact(characteristic.charactChoice(), characteristic.getNameOfStudentFile());
-		cout << "Бажаєте продовжити виконання програми?(1 - так)" << endl << "> ";
+		cout << "Бажаєте продовжити виконання програми?(1 - так, 0 - ні)" << endl << "> ";
 		cin >> choice;
-	} while (choice == 1);
+	} while (choice);
 
 	return 0;
 }
