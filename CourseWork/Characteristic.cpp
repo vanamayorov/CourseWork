@@ -65,34 +65,46 @@ void Characteristic::charactOutput() {
 }
 
 string Characteristic::charactChoice() {
-	string filename;
+	string filename, studentType;
 	switch (charactLanguage)
 	{
 	case 1:
+		if (charactPurpose == 1) {
+			studentType = "pupil";
+		}
+		else {
+			studentType = "student";
+		}
 		switch (charactRating)
 		{
 		case 1:
-			filename = "ua/pupil_positive.txt";
+			filename = "ua/" + studentType + "_positive.txt";
 			break;
 		case 2:
-			filename = "ua/pupil_negative.txt";
+			filename = "ua/" + studentType + "_negative.txt";
 			break;
 		default:
-			filename = "ua/pupil_50.txt";
+			filename = "ua/" + studentType + "_50.txt";
 			break;
 		}
 		break;
 	case 2:
+		if (charactPurpose == 1) {
+			studentType = "pupil";
+		}
+		else {
+			studentType = "student";
+		}
 		switch (charactRating)
 		{
 		case 1:
-			filename = "rus/rus_pupil_positive.txt";
+			filename = "rus/rus_" + studentType + "_positive.txt";
 			break;
 		case 2:
-			filename = "rus/rus_pupil_negative.txt";
+			filename = "rus/rus_" + studentType + "_negative.txt";
 			break;
 		default:
-			filename = "rus/rus_pupil_50.txt";
+			filename = "rus/rus_" + studentType + "_50.txt";
 			break;
 		}
 		break;
