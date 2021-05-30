@@ -10,12 +10,10 @@ class Student {
 	int studentHobby; // види захоплень
 	int numOfQualities; // к-сть якостей
 	string* studentQualities;// особисті якості
-	//string studentQuality; //окремо взята якість для запису у массив
 public:
 	void studentInput(); // функція для введеня даних про студента користувачем
 	void studentOutput(); // функція для виведення даних про студента користувачем
 	bool studentCharact(string inputFile, string outputFile);// функція для виведення характеристики
-	string getName(); // функція-get для отримання імені студента
 	~Student() {
 		delete[]studentQualities;
 	}

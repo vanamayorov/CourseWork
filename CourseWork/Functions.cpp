@@ -8,5 +8,11 @@ string getDate() {
 }
 
 bool hasOnlyDigits(const string s) {
-	return s.find_first_not_of("0123456789!@¹;$%^:?&*()_-+=/|.,") == string::npos;
+	string notDigitsArray = { "0123456789!@¹;$%^:?&*()_-+=/|.," };
+	for (long unsigned int i = 0; i < notDigitsArray.length(); i++) {
+		if (s.find(notDigitsArray[i]) != string::npos) {
+			return false;
+		}
+	}
+	return true;
 }

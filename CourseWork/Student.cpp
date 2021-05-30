@@ -6,6 +6,7 @@ void Student::studentInput() {
 	getline(cin, studentName);
 	getline(cin, studentName);
 	while (!cin.good() || studentName.length() <= MIN_SIZE || studentName.length() >= MAX_SIZE || hasOnlyDigits(studentName)) {
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		getline(cin, studentName);
 	}
@@ -14,6 +15,7 @@ void Student::studentInput() {
 	while (!cin.good() || (studentSex != 0 && studentSex != 1)) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> studentSex;
 	}
@@ -22,6 +24,7 @@ void Student::studentInput() {
 	while (!cin.good() || stoi(studentAge) <= 1920 || stoi(studentAge) > 2021) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> studentAge;
 	}
@@ -31,6 +34,7 @@ void Student::studentInput() {
 	while (!cin.good() || studentHobby < 1 || studentHobby > 5) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl;
 		cout << "Оберіть захоплення серед перелічених: " << endl;
 		cout << "1.Спорт \n2.Читання книг \n3.Фотографування \n4.Графічний дизайн \n5.Електроніка  \n"
@@ -42,6 +46,7 @@ void Student::studentInput() {
 	while (!cin.good() || numOfQualities <= 0 || numOfQualities >= MIN_SIZE) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> numOfQualities;
 	}
@@ -52,6 +57,7 @@ void Student::studentInput() {
 		cout << "> ";
 		cin >> studentQuality;
 		while (studentQuality.length() == 0 || !cin.good() || hasOnlyDigits(studentQuality)) {
+			cout << "\a" << endl;
 			cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 			cin >> studentQuality;
 		}
@@ -75,11 +81,13 @@ bool Student::studentCharact(string inputFile, string outputFile) {
 	studentFile.open(outputFile, fstream::out);
 
 	if (!templateSample.is_open()) {
+		cout << "\a" << endl;
 		cout << "Виникла помилка при відкритті файлу-шаблону" << endl;
 		return false;
 	}
 
 	if (!studentFile.is_open()) {
+		cout << "\a" << endl;
 		cout << "Виникла помилка при відкритті файлу-характеристики" << endl;
 		return false;
 	}
@@ -98,6 +106,7 @@ bool Student::studentCharact(string inputFile, string outputFile) {
 
 	studentFile.open(outputFile, fstream::in);
 	if (!studentFile.is_open()) {
+		cout << "\a" << endl;
 		cout << "Виникла помилка при відкритті файлу-характеристики" << endl;
 		return false;
 	}
@@ -152,6 +161,7 @@ bool Student::studentCharact(string inputFile, string outputFile) {
 	studentFile.close();
 	studentFile.open(outputFile, fstream::out);
 	if (!studentFile.is_open()) {
+		cout << "\a" << endl;
 		cout << "Виникла помилка при відкритті файлу-характеристики" << endl;
 		return false;
 	}
@@ -161,7 +171,4 @@ bool Student::studentCharact(string inputFile, string outputFile) {
 	return true;
 }
 
-string Student::getName() {
-	return this->studentName;
-}
 

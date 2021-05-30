@@ -16,20 +16,23 @@ void Characteristic::charactInput() {
 	while (!cin.good() || charactLanguage < 1 || charactLanguage > 3) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> charactLanguage;
 	}
 	cout << "Введіть назву текстового файлу у який буде вестись запис про особу: " << endl << "> ";
 	cin >> nameOfStudentFile;
-	while (!cin.good() || hasOnlyDigits(nameOfStudentFile)) {
+	while (!cin.good()) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> nameOfStudentFile;
 	}
 	cout << "Введіть тип розширення файлу(доступні: doc, txt, docx):" << endl << "> ";
 	cin >> fileExtension;
 	while (!cin.good() || !matchExtension(fileExtension)) {
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз!" << endl << "Введіть тип розширення файлу(доступні: doc, txt, docx):" << endl << "> ";
 		cin >> fileExtension;
 	}
@@ -40,6 +43,7 @@ void Characteristic::charactInput() {
 	while (!cin.good() || charactPurpose < 1 || charactPurpose > 2) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> charactPurpose;
 	}
@@ -49,6 +53,7 @@ void Characteristic::charactInput() {
 	while (!cin.good() || charactRating < 1 || charactRating > 3) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> charactRating;
 	}
@@ -106,6 +111,7 @@ void Characteristic::makeDirectory() {
 	while (!cin.good() || choice < 0 || choice > 1) {
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
+		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		cin >> choice;
 	}
@@ -122,6 +128,7 @@ void Characteristic::makeDirectory() {
 			this->directoryName += '/';
 		}
 		else {
+			cout << "\a" << endl;
 			cout << "Виникла помилка при створенні директорії" << endl;
 			return;
 		}
