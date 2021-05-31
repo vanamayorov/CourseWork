@@ -5,7 +5,7 @@ void Student::studentInput() {
 	cout << "Введіть прізвище, ім'я, по батькові:" << endl << "> ";
 	getline(cin, studentName);
 	getline(cin, studentName);
-	while (!cin.good() || studentName.length() <= MIN_SIZE || studentName.length() >= MAX_SIZE || hasOnlyDigits(studentName)) {
+	while (!cin.good() || studentName.length() <= MIN_SIZE || studentName.length() >= MAX_SIZE || !hasOnlyDigits(studentName)) {
 		cout << "\a" << endl;
 		cout << "Невірний ввід, спробуйте ще раз:" << endl << "> ";
 		getline(cin, studentName);
